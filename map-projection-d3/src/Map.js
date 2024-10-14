@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
-const Map = ({ geojson }) => {
+const Map = ({ mapData }) => {
   const svgRef = useRef();
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipContent, setTooltipContent] = useState('');
@@ -31,7 +31,7 @@ const Map = ({ geojson }) => {
     const height = 600;
 
     // Create a Mercator projection and fit it to the GeoJSON data https://d3js.org/d3-geo/projection
-    const projection = d3.geoMercator().fitSize([width, height], geojson);
+    const projection = d3.geoMercator().fitSize([width, height], mapData);
     // Convert GeoJSON into SVG path 
     const path = d3.geoPath().projection(projection);
 
@@ -39,7 +39,7 @@ const Map = ({ geojson }) => {
       .attr('width', width)
       .attr('height', height)
       .selectAll('path')
-      .data(geojson.features)
+      .data(mapData.features)
       .enter()
       .append('path')
       .attr('d', path)
@@ -48,7 +48,7 @@ const Map = ({ geojson }) => {
       .on('mouseover', handleMouseOver)
       .on('mousemove', handleMouseMove)
       .on('mouseout', handleMouseOut);
-  }, [geojson]);
+  }, [mapData]);
 
   return (
     <div>
