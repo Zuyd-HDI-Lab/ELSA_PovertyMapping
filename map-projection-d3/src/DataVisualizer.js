@@ -9,7 +9,9 @@ const DataVisualizer = ({ data, mapData }) => {
     const svg = d3.select('svg');
 
     // Filter the data to get only the rows where 'Opleidingsniveau' is 'Laag'
-    const laagData = data.filter(d => d.Opleidingsniveau === 'Laag');
+    const laagData = data.filter(d => d.Opleidingsniveau === 'Laag' || d.Opleidingsniveau === '2018700');
+    const middelbaarData = data.filter(d => d.Opleidingsniveau === 'Middelbaar' || d.Opleidingsniveau === '2018740');
+    const hoogData = data.filter(d => d.Opleidingsniveau === 'Hoog' || d.Opleidingsniveau === '2018790');
 
     // Filter the laagData to include only the regions present in the GeoJSON
     const filteredLaagData = laagData.filter(item =>
