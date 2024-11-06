@@ -12,8 +12,21 @@ import { SearchBar } from "@/components/searchbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Filters } from "@/components/filters";
 import { SelectVis } from "@/components/selectvis";
+import Map from "@/components/Map"
+import useDataLoader from "@/components/DataLoader";
+import useMapDataLoader from "@/components/MapDataLoader";
+import DataVisualizer from "@/components/DataVisualizer";
+import React from "react";
 
-const Home = () => {
+const Home: React.FC = () => {
+    const dataLocalPath = 'data.csv';
+    const mapLocalPath = 'heerlen_buurten_2023_formatted.json';
+    const mapData = useMapDataLoader(mapLocalPath);
+    const data = useDataLoader(dataLocalPath);
+
+    console.log('Map Data:', mapData); // debug line
+    console.log('Vis Data:', data); // debug line
+
     const handleSearch = (query: string) => {
         console.log("Search Query:", query);
         // Search on map, probably highlight
@@ -23,7 +36,11 @@ const Home = () => {
             <div className="flex flex-1">
                 <div className="relative w-3/4 p-4 bg-gray-200 flex flex-col justify-between">
                     <SearchBar onSearch={handleSearch} />
-                    <p>Map</p>
+                    {/* <p>Map</p> */}
+                    <div>
+                        {mapData && <Map mapData={mapData} />}
+                        {data.length > 0 &&  <DataVisualizer data={data} mapData={mapData} />}
+                    </div>
 
                     <div className="absolute bottom-4 right-4 w-full max-w-xs">
                         <Card>
