@@ -1,12 +1,3 @@
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { SearchBar } from "@/components/searchbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,14 +26,15 @@ const Home: React.FC = () => {
         <div className="h-screen flex flex-col">
             <div className="flex flex-1">
                 <div className="relative w-3/4 p-4 bg-gray-200 flex flex-col justify-between">
-                    <SearchBar onSearch={handleSearch} />
-                    {/* <p>Map</p> */}
-                    <div>
+                    <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
                         {mapData && <Map mapData={mapData} />}
-                        {data.length > 0 &&  <DataVisualizer data={data} mapData={mapData} />}
+                        {data.length > 0 && <DataVisualizer data={data} mapData={mapData} />}
+                    </div>
+                    <div className="relative z-10">
+                        <SearchBar onSearch={handleSearch} />
                     </div>
 
-                    <div className="absolute bottom-4 right-4 w-full max-w-xs">
+                    <div className="absolute bottom-4 right-4 w-full max-w-xs z-10">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Legend</CardTitle>
@@ -53,25 +45,12 @@ const Home: React.FC = () => {
                         </Card>
                     </div>
 
-                    <Slider defaultValue={[33]} max={100} step={1} />
+                    <div className="relative z-10">
+                        <Slider defaultValue={[33]} max={100} step={1} />
+                    </div>
                 </div>
 
                 <div className="w-1/4 p-4 bg-gray-300">
-                    {/* <Select>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a fruit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Fruits</SelectLabel>
-                                <SelectItem value="apple">Apple</SelectItem>
-                                <SelectItem value="banana">Banana</SelectItem>
-                                <SelectItem value="blueberry">Blueberry</SelectItem>
-                                <SelectItem value="grapes">Grapes</SelectItem>
-                                <SelectItem value="pineapple">Pineapple</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select> */}
                     <SelectVis options={["Option 1", "Option 2", "Option 3"]} />
                     <h1>Filters</h1>
                     <Filters filters={["Filter 1", "Filter 2", "Filter 3"]} />
