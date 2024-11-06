@@ -26,12 +26,12 @@ const SelectVis: React.FC<SelectVisProps> = ({ options }) => {
     return (
         <Select>
             <SelectTrigger>
-                <SelectValue>{selectedOption || "Select an option"}</SelectValue>
+                <SelectValue placeholder="Select an option" />
             </SelectTrigger>
 
             <SelectContent>
                 <SelectGroup>
-                    <SelectLabel>Options</SelectLabel>
+                    {/* <SelectLabel>Options</SelectLabel> */}
                     {options.map((option) => (
                         <SelectItem key={option} onSelect={() => handleSelect(option)} value={option}>
                             {option}

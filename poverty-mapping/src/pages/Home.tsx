@@ -11,6 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { SearchBar } from "@/components/searchbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Filters } from "@/components/filters";
+import { SelectVis } from "@/components/selectvis";
 
 const Home = () => {
     const handleSearch = (query: string) => {
@@ -39,7 +40,7 @@ const Home = () => {
                 </div>
 
                 <div className="w-1/4 p-4 bg-gray-300">
-                    <Select>
+                    {/* <Select>
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Select a fruit" />
                         </SelectTrigger>
@@ -53,7 +54,8 @@ const Home = () => {
                                 <SelectItem value="pineapple">Pineapple</SelectItem>
                             </SelectGroup>
                         </SelectContent>
-                    </Select>
+                    </Select> */}
+                    <SelectVis options={["Option 1", "Option 2", "Option 3"]} />
                     <h1>Filters</h1>
                     <Filters filters={["Filter 1", "Filter 2", "Filter 3"]} />
                 </div>
