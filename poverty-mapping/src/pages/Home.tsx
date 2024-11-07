@@ -6,14 +6,18 @@ import { SelectVis } from "@/components/selectvis";
 import Map from "@/components/Map"
 import useDataLoader from "@/components/DataLoader";
 import useMapDataLoader from "@/components/MapDataLoader";
-import DataVisualizer from "@/components/DataVisualizer";
-import React from "react";
+import React, { useState } from "react";
+import Vis1 from "@/components/Vis1";
+import Vis2 from "@/components/Vis2";
 
 const Home: React.FC = () => {
     const dataLocalPath = 'data.csv';
     const mapLocalPath = 'heerlen_buurten_2023_formatted.json';
     const mapData = useMapDataLoader(mapLocalPath);
     const data = useDataLoader(dataLocalPath);
+
+    const [selectedVis, setSelectedVis] = useState<string | null>(null);
+    const visOptions = ['Vis1', 'Vis2'];
 
     console.log('Map Data:', mapData); // debug line
     console.log('Vis Data:', data); // debug line
@@ -28,7 +32,8 @@ const Home: React.FC = () => {
                 <div className="relative w-3/4 p-4 bg-gray-200 flex flex-col justify-between">
                     <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
                         {mapData && <Map mapData={mapData} />}
-                        {data.length > 0 && <DataVisualizer data={data} mapData={mapData} />}
+                        {data.length > 0 && selectedVis === 'Vis1' && <Vis1 mapData={mapData} />}
+                        {data.length > 0 && selectedVis === 'Vis2' && <Vis2 mapData={mapData} />}
                     </div>
                     <div className="relative z-10">
                         <SearchBar onSearch={handleSearch} />
@@ -51,7 +56,7 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="w-1/4 p-4 bg-gray-300">
-                    <SelectVis options={["Option 1", "Option 2", "Option 3"]} />
+                    <SelectVis options={visOptions} onChange={setSelectedVis} />
                     <h1>Filters</h1>
                     <Filters filters={["Filter 1", "Filter 2", "Filter 3"]} />
                 </div>
