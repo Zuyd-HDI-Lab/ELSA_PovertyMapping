@@ -19,5 +19,8 @@ type Story = StoryObj<typeof SelectVis>
 export const Default: Story = {
     args: {
         options: ['Option 1', 'Option 2', 'Option 3'],
+        onChange: (option: string) => {
+            console.log('Selected option:', option);
+        },
     }
 }
