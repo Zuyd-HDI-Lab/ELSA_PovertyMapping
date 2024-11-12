@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 import { Feature, Geometry, GeoJsonProperties} from 'geojson';
 import useDataLoader from '@/components/DataLoader';
 
-// Define types for the props and data structures
 interface DataRow {
     Opleidingsniveau: string;
     RegiocodeGemeenteWijkBuurt_1: string;
@@ -32,15 +31,12 @@ const DataVisualizer: React.FC<DataVisualizerProps> = ({ mapData }) => {
         const svg = d3.select('#data-visualizer-svg');
         console.log('svg:', svg)
 
-        // Filter the data to get only the rows where 'Opleidingsniveau' is 'Laag'
         const laagData = data.filter(d => d.Opleidingsniveau === 'Laag');
 
-        // Filter the laagData to include only the regions present in the GeoJSON
         const filteredLaagData = laagData.filter(item =>
             mapData.features.some(feature => feature.properties?.['CBS-buurtcode'] === item.RegiocodeGemeenteWijkBuurt_1)
         );  
 
-        // Create a color scale for the 'Laag' opgeleiden based on the filtered data
         const colorScale = d3.scaleLinear<string>()
             .domain([0, d3.max(filteredLaagData, d => +d.Bevolking15Tot75Jaar_2) || 0])
             .range(['yellow', 'blue']);

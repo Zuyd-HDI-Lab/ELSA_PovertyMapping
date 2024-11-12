@@ -3,35 +3,34 @@ import { SearchBar } from "@/components/searchbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Filters } from "@/components/filters";
 import { SelectVis } from "@/components/selectvis";
-import Map from "@/components/Map"
-import useDataLoader from "@/components/DataLoader";
-import useMapDataLoader from "@/components/MapDataLoader";
-import React, { useState } from "react";
-import Vis1 from "@/components/Vis1";
-import Vis2 from "@/components/Vis2";
+import React, { useState, useEffect } from "react";
+import Viz from "@/components/Viz";
 
 const Page2: React.FC = () => {
-    const dataLocalPath = 'data.csv';
-    const mapLocalPath = 'heerlen_buurten_2023_formatted.json';
-    const mapData = useMapDataLoader(mapLocalPath);
-    const data = useDataLoader(dataLocalPath);
 
     const [selectedVis, setSelectedVis] = useState<string | null>(null);
-    const visOptions = ['Vis1', 'Vis2'];
+    const visOptions = ['Viz'];
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
-    console.log('Map Data:', mapData); // debug line
-    console.log('Vis Data:', data); // debug line
+    useEffect(() => {
+        console.log("Selected Filters:", selectedFilters);
+    }, [selectedFilters]);
 
     const handleSearch = (query: string) => {
         console.log("Search Query:", query);
         // Search on map, probably highlight
     };
+
+    const handleFilterChange = (filter: string, checked: boolean) => {
+        setSelectedFilters((prev) =>
+            checked ? [...prev, filter] : prev.filter((f) => f !== filter)
+        );
+    };
+
     return (
         <div className="h-screen relative">
             <div className="absolute inset-0 z-0 overflow-hidden">
-                {mapData && <Map mapData={mapData} />}
-                {data.length > 0 && selectedVis === 'Vis1' && <Vis1 mapData={mapData} />}
-                {data.length > 0 && selectedVis === 'Vis2' && <Vis2 mapData={mapData} />}
+                {selectedVis === 'Viz' && <Viz />}
             </div>
             
             <div className="absolute top-4 left-4 z-10">
@@ -56,7 +55,7 @@ const Page2: React.FC = () => {
             <div className="absolute top-4 right-4 w-1/4 p-4 bg-gray-300 rounded-lg shadow-lg z-10">
                 <SelectVis options={visOptions} onChange={setSelectedVis} />
                 <h1>Filters</h1>
-                <Filters filters={["Filter 1", "Filter 2", "Filter 3"]} />
+                <Filters filters={["Filter 1", "Filter 2", "Filter 3"]} onChange={handleFilterChange} />
             </div>
         </div>
     );
