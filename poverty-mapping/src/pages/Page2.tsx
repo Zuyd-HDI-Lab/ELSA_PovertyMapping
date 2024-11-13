@@ -1,13 +1,11 @@
+import React, { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { SearchBar } from "@/components/searchbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Filters } from "@/components/filters";
-import { SelectVis } from "@/components/selectvis";
-import React, { useState, useEffect } from "react";
-import Viz from "@/components/Viz";
+import Viz, { Filterlist as VizFilterlist } from "@/components/Viz";
+import Sidebar from "@/components/Sidebar";
 
 const Page2: React.FC = () => {
-
     const [selectedVis, setSelectedVis] = useState<string | null>(null);
     const visOptions = ['Viz'];
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -25,6 +23,15 @@ const Page2: React.FC = () => {
         setSelectedFilters((prev) => 
             checked ? [...prev, filter] : prev.filter((f) => f !== filter)
         );
+    };
+
+    const getFilterList = () => {
+        switch (selectedVis) {
+            case 'Viz':
+                return VizFilterlist;
+            default:
+                return [];
+        }
     };
 
     return (
@@ -52,11 +59,12 @@ const Page2: React.FC = () => {
                 <Slider defaultValue={[33]} max={100} step={1} />
             </div>
 
-            <div className="absolute top-4 right-4 w-1/4 p-4 bg-gray-300 rounded-lg shadow-lg z-10">
-                <SelectVis options={visOptions} onChange={setSelectedVis} />
-                <h1>Filters</h1>
-                <Filters filters={[">10", "Filter 2", "Filter 3"]} onChange={handleFilterChange} />
-            </div>
+            <Sidebar 
+                visOptions={visOptions} 
+                setSelectedVis={setSelectedVis} 
+                handleFilterChange={handleFilterChange} 
+                filterList={getFilterList()} 
+            />
         </div>
     );
 };

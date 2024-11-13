@@ -28,6 +28,8 @@ interface AdditionalDataEntry {
     InwonersVanafDeAOWLeeftijd_15: number;
 }
 
+const Filterlist = [">10", "Filter 2", "Filter 3"];
+
 const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
     const perioden = "2023MM03";
     const svgRef = useRef<SVGSVGElement | null>(null);
@@ -148,3 +150,4 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
 };
 
 export default Viz;
+export { Filterlist };
