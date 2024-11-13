@@ -22,7 +22,7 @@ const Page2: React.FC = () => {
     };
 
     const handleFilterChange = (filter: string, checked: boolean) => {
-        setSelectedFilters((prev) =>
+        setSelectedFilters((prev) => 
             checked ? [...prev, filter] : prev.filter((f) => f !== filter)
         );
     };
@@ -30,7 +30,7 @@ const Page2: React.FC = () => {
     return (
         <div className="h-screen relative">
             <div className="absolute inset-0 z-0 overflow-hidden">
-                {selectedVis === 'Viz' && <Viz />}
+                {selectedVis === 'Viz' && <Viz selectedFilters={selectedFilters} />}
             </div>
             
             <div className="absolute top-4 left-4 z-10">
@@ -55,7 +55,7 @@ const Page2: React.FC = () => {
             <div className="absolute top-4 right-4 w-1/4 p-4 bg-gray-300 rounded-lg shadow-lg z-10">
                 <SelectVis options={visOptions} onChange={setSelectedVis} />
                 <h1>Filters</h1>
-                <Filters filters={["Filter 1", "Filter 2", "Filter 3"]} onChange={handleFilterChange} />
+                <Filters filters={[">10", "Filter 2", "Filter 3"]} onChange={handleFilterChange} />
             </div>
         </div>
     );

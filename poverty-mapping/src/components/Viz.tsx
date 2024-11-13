@@ -1,8 +1,13 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { FeatureCollection, Feature } from 'geojson';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { Feature } from 'geojson';
 import * as d3 from 'd3';
 import useMapDataLoader from './MapDataLoader';
 
+interface VizProps {
+
+    selectedFilters: string[];
+
+}
 
 interface FeatureProperties {
     id: number;
@@ -23,7 +28,7 @@ interface AdditionalDataEntry {
     InwonersVanafDeAOWLeeftijd_15: number;
 }
 
-const Viz = () => {
+const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
     const perioden = "2023MM03";
     const svgRef = useRef<SVGSVGElement | null>(null);
     const mapData = useMapDataLoader('/heerlen_buurten_2023_formatted.json');
@@ -70,17 +75,20 @@ const Viz = () => {
         setShowTooltip(false);
     };
 
-    const getColor = (value: number | null | undefined) => {
+    const getColor = useCallback((value: number | null | undefined) => {
         if (value === null || value === undefined) {
             return 'darkgray';
         }
-
         const colorScale = d3.scaleLinear<string>()
             .domain([0, 15])
             .range(['green', 'red']);
+        
+        if (selectedFilters.includes(">10")) {
+            return value > 10 ? colorScale(value) : 'gray';
+        }
 
         return colorScale(value);
-    };
+    }, [selectedFilters]);
 
     useEffect(() => {
         if (mapData && svgRef.current) {
@@ -113,7 +121,7 @@ const Viz = () => {
             svg.call(zoom);
         }
 
-    }, [mapData]);
+    }, [getColor, mapData]);
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
