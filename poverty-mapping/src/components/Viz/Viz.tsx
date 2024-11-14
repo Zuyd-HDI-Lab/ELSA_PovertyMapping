@@ -102,14 +102,14 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
             const projection = d3.geoMercator().fitSize([width, height], mapData);
             const path = d3.geoPath().projection(projection);
 
-            const paths = svg.selectAll('path')
+            const paths = svg.selectAll<SVGPathElement, Feature>('path')
                 .data(mapData.features);
 
             paths.exit().remove();
 
             paths.enter()
                 .append('path')
-                .merge(paths as any)
+                .merge(paths)
                 .attr('d', path)
                 .attr('fill', d => getColor(d.properties?.Bijstandsuitkering_10))
                 .attr('stroke', 'black')
