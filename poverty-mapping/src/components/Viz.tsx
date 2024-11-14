@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { Feature } from 'geojson';
 import * as d3 from 'd3';
 import useMapDataLoader from './MapDataLoader';
@@ -28,7 +28,11 @@ interface AdditionalDataEntry {
     InwonersVanafDeAOWLeeftijd_15: number;
 }
 
-const Filterlist = [">10", "Filter 2", "Filter 3"];
+const Filterlist = [
+    { value: ">10", label: "Above 10%" },
+    { value: "filter2", label: "Filter 2" },
+    { value: "filter3", label: "Filter 3" }
+];
 
 const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
     const perioden = "2023MM03";
@@ -38,6 +42,13 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
     const [showTooltip, setShowTooltip] = useState(false);
     const [tooltipContent, setTooltipContent] = useState('');
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+
+    const colorScale = useMemo(() => 
+        d3.scaleLinear<string>()
+            .domain([0, 15])
+            .range(['green', 'red']),
+        []
+    );
 
     useEffect(() => {
         fetch('/85586NED_TypedDataSet_11112024_142716.json')
@@ -81,16 +92,13 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
         if (value === null || value === undefined) {
             return 'darkgray';
         }
-        const colorScale = d3.scaleLinear<string>()
-            .domain([0, 15])
-            .range(['green', 'red']);
         
         if (selectedFilters.includes(">10")) {
             return value > 10 ? colorScale(value) : 'gray';
         }
 
         return colorScale(value);
-    }, [selectedFilters]);
+    }, [selectedFilters, colorScale]);
 
     useEffect(() => {
         if (mapData && svgRef.current) {

@@ -1,29 +1,28 @@
 import * as React from "react";
 import { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 
+interface Option {
+    value: string;
+    label: string;
+}
+
 interface SelectVisProps {
-    options: string[];
+    options: Option[];
+    value: string | null;
     onChange: (option: string) => void;
 }
 
-const SelectVis: React.FC<SelectVisProps> = ({ options, onChange }) => {
-    const [selectedOption, setSelectedOption] = React.useState<string | null>(null);
-
-    const handleSelect = (option: string) => {
-        setSelectedOption(option);
-        onChange(option);
-    };
-
+const SelectVis: React.FC<SelectVisProps> = ({ options, value, onChange }) => {
     return (
-        <Select onValueChange={handleSelect}>
+        <Select value={value || undefined} onValueChange={onChange}>
             <SelectTrigger>
                 <SelectValue placeholder="Select an option" />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
                     {options.map((option) => (
-                        <SelectItem key={option} value={option}>
-                            {option}
+                        <SelectItem key={option.value} value={option.value}>
+                            {option.label}
                         </SelectItem>
                     ))}
                 </SelectGroup>
@@ -33,3 +32,4 @@ const SelectVis: React.FC<SelectVisProps> = ({ options, onChange }) => {
 };
 
 export { SelectVis };
+export type { Option };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Slider } from "@/components/ui/slider";
 import { SearchBar } from "@/components/searchbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,23 +7,26 @@ import Sidebar from "@/components/Sidebar";
 
 const Page2: React.FC = () => {
     const [selectedVis, setSelectedVis] = useState<string | null>(null);
-    const visOptions = ['Viz'];
+    const visOptions = [
+        { value: 'Viz', label: 'Visualization 1' },
+    ];
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
     useEffect(() => {
         console.log("Selected Filters:", selectedFilters);
     }, [selectedFilters]);
 
-    const handleSearch = (query: string) => {
+    const handleSearch = useCallback((query: string) => {
         console.log("Search Query:", query);
         // Search on map, probably highlight
-    };
+        // or center aan zoom
+    }, []);
 
-    const handleFilterChange = (filter: string, checked: boolean) => {
+    const handleFilterChange = useCallback((filter: string, checked: boolean) => {
         setSelectedFilters((prev) => 
             checked ? [...prev, filter] : prev.filter((f) => f !== filter)
         );
-    };
+    }, []);
 
     const getFilterList = () => {
         switch (selectedVis) {
@@ -61,9 +64,11 @@ const Page2: React.FC = () => {
 
             <Sidebar 
                 visOptions={visOptions} 
+                selectedVis={selectedVis}
                 setSelectedVis={setSelectedVis} 
                 handleFilterChange={handleFilterChange} 
-                filterList={getFilterList()} 
+                filterList={getFilterList()}
+                selectedFilters={selectedFilters}
             />
         </div>
     );
