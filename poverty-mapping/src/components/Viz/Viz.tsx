@@ -4,7 +4,6 @@ import * as d3 from 'd3';
 import useMapDataLoader from '../MapDataLoader';
 import { Filterlist, VizLegend } from './constants';
 
-// Move the interfaces here
 interface VizProps {
     selectedFilters: string[];
 }
@@ -29,8 +28,6 @@ interface AdditionalDataEntry {
 }
 
 const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
-    // Component implementation from original file
-    // Reference lines 47-168 from the original Viz.tsx
     const perioden = "2023MM03";
     const svgRef = useRef<SVGSVGElement | null>(null);
     const mapData = useMapDataLoader('/heerlen_buurten_2023_formatted.json');
