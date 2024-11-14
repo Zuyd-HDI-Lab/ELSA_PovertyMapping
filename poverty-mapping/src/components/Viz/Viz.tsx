@@ -105,19 +105,26 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
             const projection = d3.geoMercator().fitSize([width, height], mapData);
             const path = d3.geoPath().projection(projection);
 
-            svg.selectAll('path').remove();
+            const paths = svg.selectAll('path')
+                .data(mapData.features);
 
-            svg.selectAll('path')
-                .data(mapData.features)
-                .enter()
+            paths.exit().remove();
+
+            paths.enter()
                 .append('path')
+                .merge(paths as any)
                 .attr('d', path)
                 .attr('fill', d => getColor(d.properties?.Bijstandsuitkering_10))
                 .attr('stroke', 'black')
                 .on('mouseover', handleMouseOver)
                 .on('mousemove', handleMouseMove)
                 .on('mouseout', handleMouseOut);
+        }
+    }, [getColor, mapData]);
 
+    useEffect(() => {
+        if (svgRef.current) {
+            const svg = d3.select(svgRef.current);
             const zoom = d3.zoom<SVGSVGElement, unknown>()
                 .scaleExtent([0.5, 8])
                 .on('zoom', (event) => {
@@ -126,8 +133,7 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
 
             svg.call(zoom);
         }
-
-    }, [getColor, mapData]);
+    }, []);
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
