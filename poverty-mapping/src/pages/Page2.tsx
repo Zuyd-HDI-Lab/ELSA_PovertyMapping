@@ -19,7 +19,7 @@ const Page2: React.FC = () => {
     const handleSearch = useCallback((query: string) => {
         console.log("Search Query:", query);
         // Search on map, probably highlight
-        // or center aan zoom
+        // or center and zoom
     }, []);
 
     const handleFilterChange = useCallback((filter: string, checked: boolean) => {
