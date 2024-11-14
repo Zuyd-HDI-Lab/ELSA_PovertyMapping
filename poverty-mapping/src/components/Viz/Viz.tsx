@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { Feature } from 'geojson';
 import * as d3 from 'd3';
-import useMapDataLoader from './MapDataLoader';
+import useMapDataLoader from '../MapDataLoader';
+import { Filterlist, VizLegend } from './constants';
 
+// Move the interfaces here
 interface VizProps {
-
     selectedFilters: string[];
-
 }
 
 interface FeatureProperties {
@@ -28,13 +28,9 @@ interface AdditionalDataEntry {
     InwonersVanafDeAOWLeeftijd_15: number;
 }
 
-const Filterlist = [
-    { value: ">10", label: "Above 10%" },
-    { value: "filter2", label: "Filter 2" },
-    { value: "filter3", label: "Filter 3" }
-];
-
 const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
+    // Component implementation from original file
+    // Reference lines 47-168 from the original Viz.tsx
     const perioden = "2023MM03";
     const svgRef = useRef<SVGSVGElement | null>(null);
     const mapData = useMapDataLoader('/heerlen_buurten_2023_formatted.json');
@@ -43,7 +39,7 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
     const [tooltipContent, setTooltipContent] = useState('');
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
-    const colorScale = useMemo(() => 
+    const colorScale = useMemo(() =>
         d3.scaleLinear<string>()
             .domain([0, 15])
             .range(['green', 'red']),
@@ -92,7 +88,7 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
         if (value === null || value === undefined) {
             return 'darkgray';
         }
-        
+
         if (selectedFilters.includes(">10")) {
             return value > 10 ? colorScale(value) : 'gray';
         }
@@ -158,4 +154,4 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
 };
 
 export default Viz;
-export { Filterlist };
+export { Filterlist, VizLegend }; 
