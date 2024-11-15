@@ -37,7 +37,7 @@ const Page2: React.FC = () => {
         }
     };
 
-    const getLegendContent = () => {
+    const getLegendProps = () => {
         switch (selectedVis) {
             case 'Viz':
                 return VizLegend;
@@ -57,7 +57,7 @@ const Page2: React.FC = () => {
             </div>
 
             <div className="absolute bottom-4 right-4 w-full max-w-xs z-10">
-                <Legend content={getLegendContent()} />
+                {getLegendProps() && <Legend {...getLegendProps()!} />}
             </div>
 
             <div className="absolute bottom-4 left-4 w-full max-w-xs z-10">

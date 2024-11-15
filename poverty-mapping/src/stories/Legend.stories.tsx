@@ -9,9 +9,18 @@ const meta: Meta<typeof Legend> = {
         layout: 'centered',
     },
     argTypes: {
+        title: {
+            control: 'text',
+            description: 'Legend title',
+        },
+        type: {
+            control: 'radio',
+            options: ['discrete', 'gradient'],
+            description: 'Type of legend to display',
+        },
         content: {
             control: 'object',
-            description: 'Legend content including title and items',
+            description: 'Legend content based on type',
         },
     },
 } satisfies Meta<typeof Legend>
@@ -19,52 +28,70 @@ const meta: Meta<typeof Legend> = {
 export default meta
 type Story = StoryObj<typeof Legend>
 
-export const Default: Story = {
+export const DiscreteDefault: Story = {
     args: {
+        title: 'Sample Legend',
+        type: 'discrete',
+        content: [
+            { color: '#FF0000', label: 'Red Item' },
+            { color: '#00FF00', label: 'Green Item' },
+            { color: '#0000FF', label: 'Blue Item' },
+        ],
+    },
+}
+
+export const GradientDefault: Story = {
+    args: {
+        title: 'Temperature Range',
+        type: 'gradient',
         content: {
-            title: 'Sample Legend',
-            items: [
-                { color: '#FF0000', label: 'Red Item' },
-                { color: '#00FF00', label: 'Green Item' },
-                { color: '#0000FF', label: 'Blue Item' },
-            ],
+            stops: [
+                { value: 0, color: '#00ff00', label: '0°C' },
+                { value: 50, color: '#ffff00', label: '50°C' },
+                { value: 100, color: '#ff0000', label: '100°C' },
+            ]
         },
     },
 }
 
-export const Empty: Story = {
+export const GradientTwoStops: Story = {
     args: {
-        content: null,
+        title: 'Simple Range',
+        type: 'gradient',
+        content: {
+            stops: [
+                { value: 0, color: 'green', label: '0%' },
+                { value: 15, color: 'red', label: '15%' }
+            ]
+        },
     },
 }
 
-export const LongList: Story = {
+export const LongDiscreteList: Story = {
     args: {
-        content: {
-            title: 'Legend with Many Items',
-            items: [
-                { color: '#FF0000', label: 'Red' },
-                { color: '#FF7F00', label: 'Orange' },
-                { color: '#FFFF00', label: 'Yellow' },
-                { color: '#00FF00', label: 'Green' },
-                { color: '#0000FF', label: 'Blue' },
-                { color: '#4B0082', label: 'Indigo' },
-                { color: '#9400D3', label: 'Violet' },
-            ],
-        },
+        title: 'Legend with Many Items',
+        type: 'discrete',
+        content: [
+            { color: '#FF0000', label: 'Red' },
+            { color: '#FF7F00', label: 'Orange' },
+            { color: '#FFFF00', label: 'Yellow' },
+            { color: '#00FF00', label: 'Green' },
+            { color: '#0000FF', label: 'Blue' },
+            { color: '#4B0082', label: 'Indigo' },
+            { color: '#9400D3', label: 'Violet' },
+        ],
     },
 }
 
 export const CustomColors: Story = {
     args: {
-        content: {
-            title: 'Data Categories',
-            items: [
-                { color: '#e5f5e0', label: '0-20%' },
-                { color: '#a1d99b', label: '21-40%' },
-                { color: '#31a354', label: '41-60%' },
-                { color: '#006d2c', label: '61-80%' },
-            ],
-        },
+        title: 'Data Categories',
+        type: 'discrete',
+        content: [
+            { color: '#e5f5e0', label: '0-20%' },
+            { color: '#a1d99b', label: '21-40%' },
+            { color: '#31a354', label: '41-60%' },
+            { color: '#006d2c', label: '61-80%' },
+        ],
     },
 } 

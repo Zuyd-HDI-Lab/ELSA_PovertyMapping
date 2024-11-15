@@ -1,14 +1,14 @@
-import { LegendContent } from '../Legend';
-
 export const Filterlist = [
     { value: ">10", label: "Above 10%" },
 ];
 
-export const VizLegend: LegendContent = {
+export const VizLegend = {
     title: "Bijstandsuitkering",
-    items: [
-        { color: 'darkgray', label: 'No data' },
-        { color: 'green', label: '0%' },
-        { color: 'red', label: '15%' },
-    ]
+    type: "gradient" as const,
+    content: {
+        stops: [
+            { value: 0, color: 'green', label: '0%' },
+            { value: 15, color: 'red', label: '15%' }
+        ]
+    }
 }; 
