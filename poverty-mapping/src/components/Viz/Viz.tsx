@@ -1,11 +1,12 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
-import { Feature } from 'geojson';
+import { Feature, FeatureCollection } from 'geojson';
 import * as d3 from 'd3';
 import useMapDataLoader from '../MapDataLoader';
-import { Filterlist, VizLegend } from './constants';
+import { Filterlist, VizLegend, PeriodenList } from './constants';
 
 interface VizProps {
     selectedFilters: string[];
+    selectedPerioden: string;
 }
 
 interface FeatureProperties {
@@ -27,10 +28,11 @@ interface AdditionalDataEntry {
     InwonersVanafDeAOWLeeftijd_15: number;
 }
 
-const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
-    const perioden = "2023MM03";
+const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
+    const perioden = selectedPerioden;
     const svgRef = useRef<SVGSVGElement | null>(null);
     const mapData = useMapDataLoader('/heerlen_buurten_2023_formatted.json');
+    const [processedMapData, setProcessedMapData] = useState<FeatureCollection | null>(null);
     const [additionalData, setAdditionalData] = useState<Record<string, AdditionalDataEntry> | null>(null);
     const [showTooltip, setShowTooltip] = useState(false);
     const [tooltipContent, setTooltipContent] = useState('');
@@ -38,7 +40,7 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
 
     const colorScale = useMemo(() =>
         d3.scaleLinear<string>()
-            .domain([0, 15])
+            .domain([0, 20])
             .range(['green', 'red']),
         []
     );
@@ -52,17 +54,22 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
 
     useEffect(() => {
         if (mapData && additionalData) {
-            mapData.features = mapData.features.map((feature) => {
-                const buurtCode = (feature.properties as FeatureProperties)?.["CBS-buurtcode"];
-                const matchedData = Object.values(additionalData).find(
-                    (item) => item.WijkenEnBuurten.trim() === buurtCode && item.Perioden === perioden
-                );
-
-                (feature.properties as FeatureProperties).Bijstandsuitkering_10 = matchedData?.Bijstandsuitkering_10 ?? null;
-                return feature;
-            });
+            const updatedMapData = {
+                ...mapData,
+                features: mapData.features.map((feature) => ({
+                    ...feature,
+                    properties: {
+                        ...feature.properties,
+                        Bijstandsuitkering_10: Object.values(additionalData).find(
+                            (item) => item.WijkenEnBuurten.trim() === feature.properties?.["CBS-buurtcode"] && 
+                                     item.Perioden === perioden
+                        )?.Bijstandsuitkering_10 ?? null
+                    }
+                }))
+            };
+            setProcessedMapData(updatedMapData);
         }
-    }, [mapData, additionalData]);
+    }, [mapData, additionalData, perioden]);
 
     const handleMouseOver = (event: React.MouseEvent<SVGPathElement, MouseEvent>, d: Feature) => {
         const name = d.properties?.buurtnaam || `Unnamed Feature, id: ${d.properties?.id}`;
@@ -99,11 +106,11 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
             const width = svg.node()?.clientWidth || 800;
             const height = svg.node()?.clientHeight || 600;
 
-            const projection = d3.geoMercator().fitSize([width, height], mapData);
+            const projection = d3.geoMercator().fitSize([width, height], processedMapData || mapData);
             const path = d3.geoPath().projection(projection);
 
             const paths = svg.selectAll<SVGPathElement, Feature>('path')
-                .data(mapData.features);
+                .data(processedMapData?.features || []);
 
             paths.exit().remove();
 
@@ -117,7 +124,7 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
                 .on('mousemove', handleMouseMove)
                 .on('mouseout', handleMouseOut);
         }
-    }, [getColor, mapData]);
+    }, [getColor, processedMapData, mapData]);
 
     useEffect(() => {
         if (svgRef.current) {
@@ -157,4 +164,4 @@ const Viz: React.FC<VizProps> = ({ selectedFilters }) => {
 };
 
 export default Viz;
-export { Filterlist, VizLegend }; 
+export { Filterlist, VizLegend, PeriodenList }; 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Slider } from "@/components/ui/slider";
 import { SearchBar } from "@/components/searchbar";
-import Viz, { Filterlist as VizFilterlist, VizLegend } from "@/components/Viz";
+import Viz, { Filterlist as VizFilterlist, VizLegend, PeriodenList as VizPeriodenList } from "@/components/Viz";
 import Sidebar from "@/components/Sidebar";
 import Legend from "@/components/Legend";
 
@@ -11,6 +11,8 @@ const Page2: React.FC = () => {
         { value: 'Viz', label: 'Visualization 1' },
     ];
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+    const [selectedPerioden, setSelectedPerioden] = useState<string | null>(null);
+
 
     useEffect(() => {
         console.log("Selected Filters:", selectedFilters);
@@ -23,7 +25,7 @@ const Page2: React.FC = () => {
     }, []);
 
     const handleFilterChange = useCallback((filter: string, checked: boolean) => {
-        setSelectedFilters((prev) => 
+        setSelectedFilters((prev) =>
             checked ? [...prev, filter] : prev.filter((f) => f !== filter)
         );
     }, []);
@@ -32,6 +34,15 @@ const Page2: React.FC = () => {
         switch (selectedVis) {
             case 'Viz':
                 return VizFilterlist;
+            default:
+                return [];
+        }
+    };
+
+    const getPeriodenList = () => {
+        switch (selectedVis) {
+            case 'Viz':
+                return VizPeriodenList;
             default:
                 return [];
         }
@@ -49,9 +60,9 @@ const Page2: React.FC = () => {
     return (
         <div className="h-screen relative">
             <div className="absolute inset-0 z-0 overflow-hidden">
-                {selectedVis === 'Viz' && <Viz selectedFilters={selectedFilters} />}
+                {selectedVis === 'Viz' && <Viz selectedFilters={selectedFilters} selectedPerioden={selectedPerioden} />}
             </div>
-            
+
             <div className="absolute top-4 left-4 z-10">
                 <SearchBar onSearch={handleSearch} />
             </div>
@@ -64,13 +75,16 @@ const Page2: React.FC = () => {
                 <Slider defaultValue={[33]} max={100} step={1} />
             </div>
 
-            <Sidebar 
-                visOptions={visOptions} 
+            <Sidebar
+                visOptions={visOptions}
                 selectedVis={selectedVis}
-                setSelectedVis={setSelectedVis} 
-                handleFilterChange={handleFilterChange} 
+                setSelectedVis={setSelectedVis}
+                handleFilterChange={handleFilterChange}
                 filterList={getFilterList()}
                 selectedFilters={selectedFilters}
+                PeriodenList={getPeriodenList()}
+                selectedPerioden={selectedPerioden}
+                setSelectedPerioden={setSelectedPerioden}
             />
         </div>
     );

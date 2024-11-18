@@ -1,6 +1,7 @@
 import React from 'react';
 import { SelectVis, type Option } from '@/components/selectvis';
 import { Filters, type Filter } from '@/components/filters';
+import { SelectPerioden } from '@/components/selectperioden';
 
 interface SidebarProps {
     visOptions: Option[];
@@ -9,6 +10,9 @@ interface SidebarProps {
     handleFilterChange: (filter: string, checked: boolean) => void;
     filterList: Filter[];
     selectedFilters: string[];
+    PeriodenList: string[];
+    selectedPerioden: string;
+    setSelectedPerioden: (perioden: string) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -17,7 +21,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     setSelectedVis, 
     handleFilterChange, 
     filterList,
-    selectedFilters 
+    selectedFilters,
+    PeriodenList,
+    selectedPerioden,
+    setSelectedPerioden
 }) => {
     return (
         <div className="absolute top-4 right-4 w-1/4 p-4 bg-gray-300 rounded-lg shadow-lg z-10">
@@ -27,6 +34,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                 filters={filterList} 
                 selectedFilters={selectedFilters}
                 onChange={handleFilterChange} 
+            />
+            <h1>Perioden</h1>
+            <SelectPerioden 
+                options={PeriodenList} 
+                value={selectedPerioden} 
+                onChange={setSelectedPerioden} 
             />
         </div>
     );

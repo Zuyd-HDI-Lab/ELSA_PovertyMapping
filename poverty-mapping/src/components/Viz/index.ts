@@ -1,2 +1,2 @@
 export { default } from './Viz';
-export { Filterlist, VizLegend } from './Viz'; 
+export { Filterlist, VizLegend, PeriodenList } from './Viz'; 
