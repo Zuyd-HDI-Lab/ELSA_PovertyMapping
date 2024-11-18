@@ -9,13 +9,6 @@ interface VizProps {
     selectedPerioden: string;
 }
 
-interface FeatureProperties {
-    id: number;
-    "CBS-buurtcode": string;
-    buurtnaam: string;
-    Bijstandsuitkering_10?: number | null;
-}
-
 interface AdditionalDataEntry {
     ID: number;
     WijkenEnBuurten: string;
@@ -45,25 +38,31 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
         []
     );
 
+    const getDataFileName = (period: string) => {
+        return `/cbs_bijstand_${period}.json`;
+    };
+
     useEffect(() => {
-        fetch('/85586NED_TypedDataSet_11112024_142716.json')
+        fetch(getDataFileName(perioden))
             .then(response => response.json())
             .then(data => setAdditionalData(data.value as Record<string, AdditionalDataEntry>))
             .catch(error => console.error("Error loading additional data:", error));
-    }, []);
+    }, [perioden]);
 
     useEffect(() => {
-        if (mapData && additionalData) {
+        if (mapData) {
             const updatedMapData = {
                 ...mapData,
                 features: mapData.features.map((feature) => ({
                     ...feature,
                     properties: {
                         ...feature.properties,
-                        Bijstandsuitkering_10: Object.values(additionalData).find(
-                            (item) => item.WijkenEnBuurten.trim() === feature.properties?.["CBS-buurtcode"] && 
-                                     item.Perioden === perioden
-                        )?.Bijstandsuitkering_10 ?? null
+                        Bijstandsuitkering_10: additionalData ? 
+                            Object.values(additionalData).find(
+                                (item) => item.WijkenEnBuurten.trim() === feature.properties?.["CBS-buurtcode"] && 
+                                         item.Perioden === perioden
+                            )?.Bijstandsuitkering_10 ?? null
+                            : null
                     }
                 }))
             };
