@@ -12,61 +12,13 @@ interface VizProps {
     selectedPerioden: string | null;
 }
 
-const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
-    const svgRef = useRef<SVGSVGElement | null>(null);
-    const mapData = useMapDataLoader('/heerlen_buurten_2023_formatted.json');
-    const [processedMapData, setProcessedMapData] = useState<FeatureCollection | null>(null);
-    const [additionalData, setAdditionalData] = useState<Record<string, AdditionalDataEntry> | null>(null);
-    const { tooltipState, handlers } = useTooltip();
-
-    const colorScale = useMemo(() =>
-        d3.scaleLinear<string>()
-            .domain([0, 20])
-            .range(['green', 'red']),
-        []
-    );
-
-    useEffect(() => {
-        if (selectedPerioden) {
-            fetchAdditionalData(selectedPerioden)
-                .then(setAdditionalData)
-                .catch(error => console.error("Error loading additional data:", error));
-        }
-    }, [selectedPerioden]);
-
-    useEffect(() => {
-        if (mapData && selectedPerioden) {
-            const updatedMapData = {
-                ...mapData,
-                features: mapData.features.map((feature) => ({
-                    ...feature,
-                    properties: {
-                        ...feature.properties,
-                        Bijstandsuitkering_10: additionalData ? 
-                            Object.values(additionalData).find(
-                                (item) => item.WijkenEnBuurten.trim() === feature.properties?.["CBS-buurtcode"] && 
-                                         item.Perioden === selectedPerioden
-                            )?.Bijstandsuitkering_10 ?? null
-                            : null
-                    }
-                }))
-            };
-            setProcessedMapData(updatedMapData);
-        }
-    }, [mapData, additionalData, selectedPerioden]);
-
-    const getColor = useCallback((value: number | null | undefined) => {
-        if (value === null || value === undefined) {
-            return 'darkgray';
-        }
-
-        if (selectedFilters.includes(">10")) {
-            return value > 10 ? colorScale(value) : 'gray';
-        }
-
-        return colorScale(value);
-    }, [selectedFilters, colorScale]);
-
+const useMapRenderer = (
+    svgRef: React.RefObject<SVGSVGElement>,
+    mapData: FeatureCollection | null,
+    processedMapData: FeatureCollection | null,
+    getColor: (value: number | null | undefined) => string,
+    handlers: ReturnType<typeof useTooltip>['handlers']
+) => {
     useEffect(() => {
         if (mapData && svgRef.current) {
             const svg = d3.select(svgRef.current);
@@ -91,8 +43,64 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
                 .on('mousemove', handlers.handleMouseMove)
                 .on('mouseout', handlers.handleMouseOut);
         }
-    }, [getColor, processedMapData, mapData, handlers]);
+    }, [getColor, processedMapData, mapData, handlers, svgRef]);
+};
 
+const useProcessMapData = (
+    mapData: FeatureCollection | null,
+    additionalData: Record<string, AdditionalDataEntry> | null,
+    selectedPerioden: string | null
+) => {
+    const [processedMapData, setProcessedMapData] = useState<FeatureCollection | null>(null);
+
+    useEffect(() => {
+        if (mapData) {
+            const updatedMapData = {
+                ...mapData,
+                features: mapData.features.map((feature) => ({
+                    ...feature,
+                    properties: {
+                        ...feature.properties,
+                        Bijstandsuitkering_10: selectedPerioden && additionalData ?
+                            Object.values(additionalData).find(
+                                (item) => item.WijkenEnBuurten.trim() === feature.properties?.["CBS-buurtcode"] &&
+                                    item.Perioden === selectedPerioden
+                            )?.Bijstandsuitkering_10 ?? null
+                            : null
+                    }
+                }))
+            };
+            setProcessedMapData(updatedMapData);
+        }
+    }, [mapData, additionalData, selectedPerioden]);
+
+    return processedMapData;
+};
+
+const useColorScale = (selectedFilters: string[]) => {
+    const colorScale = useMemo(() =>
+        d3.scaleLinear<string>()
+            .domain([0, 20])
+            .range(['green', 'red']),
+        []
+    );
+
+    const getColor = useCallback((value: number | null | undefined) => {
+        if (value === null || value === undefined) {
+            return 'darkgray';
+        }
+
+        if (selectedFilters.includes(">10")) {
+            return value > 10 ? colorScale(value) : 'gray';
+        }
+
+        return colorScale(value);
+    }, [selectedFilters, colorScale]);
+
+    return getColor;
+};
+
+const useZoom = (svgRef: React.RefObject<SVGSVGElement>) => {
     useEffect(() => {
         if (svgRef.current) {
             const svg = d3.select(svgRef.current);
@@ -104,7 +112,28 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
 
             svg.call(zoom);
         }
-    }, []);
+    }, [svgRef]);
+};
+
+const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
+    const svgRef = useRef<SVGSVGElement | null>(null);
+    const mapData = useMapDataLoader('/heerlen_buurten_2023_formatted.json');
+    const [additionalData, setAdditionalData] = useState<Record<string, AdditionalDataEntry> | null>(null);
+    const { tooltipState, handlers } = useTooltip();
+
+    const getColor = useColorScale(selectedFilters);
+    const processedMapData = useProcessMapData(mapData, additionalData, selectedPerioden);
+
+    useEffect(() => {
+        if (selectedPerioden) {
+            fetchAdditionalData(selectedPerioden)
+                .then(setAdditionalData)
+                .catch(error => console.error("Error loading additional data:", error));
+        }
+    }, [selectedPerioden]);
+
+    useMapRenderer(svgRef, mapData, processedMapData, getColor, handlers);
+    useZoom(svgRef);
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
