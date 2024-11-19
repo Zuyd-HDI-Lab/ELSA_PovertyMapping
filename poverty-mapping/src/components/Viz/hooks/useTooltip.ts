@@ -10,6 +10,12 @@ interface TooltipState {
     };
 }
 
+export interface TooltipHandlers {
+    handleMouseOver: (event: React.MouseEvent<SVGPathElement, MouseEvent>, d: Feature) => void;
+    handleMouseMove: (event: MouseEvent) => void;
+    handleMouseOut: () => void;
+}
+
 export const useTooltip = () => {
     const [tooltipState, setTooltipState] = useState<TooltipState>({
         show: false,
