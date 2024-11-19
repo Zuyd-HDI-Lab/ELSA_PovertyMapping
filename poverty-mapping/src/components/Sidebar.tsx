@@ -11,7 +11,7 @@ interface SidebarProps {
     filterList: Filter[];
     selectedFilters: string[];
     PeriodenList: string[];
-    selectedPerioden: string;
+    selectedPerioden: string | null;
     setSelectedPerioden: (perioden: string) => void;
 }
 

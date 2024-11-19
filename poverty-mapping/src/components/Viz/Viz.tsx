@@ -9,11 +9,10 @@ import { useTooltip } from './hooks/useTooltip';
 
 interface VizProps {
     selectedFilters: string[];
-    selectedPerioden: string;
+    selectedPerioden: string | null;
 }
 
 const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
-    const perioden = selectedPerioden;
     const svgRef = useRef<SVGSVGElement | null>(null);
     const mapData = useMapDataLoader('/heerlen_buurten_2023_formatted.json');
     const [processedMapData, setProcessedMapData] = useState<FeatureCollection | null>(null);
@@ -28,13 +27,15 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
     );
 
     useEffect(() => {
-        fetchAdditionalData(perioden)
-            .then(setAdditionalData)
-            .catch(error => console.error("Error loading additional data:", error));
-    }, [perioden]);
+        if (selectedPerioden) {
+            fetchAdditionalData(selectedPerioden)
+                .then(setAdditionalData)
+                .catch(error => console.error("Error loading additional data:", error));
+        }
+    }, [selectedPerioden]);
 
     useEffect(() => {
-        if (mapData) {
+        if (mapData && selectedPerioden) {
             const updatedMapData = {
                 ...mapData,
                 features: mapData.features.map((feature) => ({
@@ -44,7 +45,7 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
                         Bijstandsuitkering_10: additionalData ? 
                             Object.values(additionalData).find(
                                 (item) => item.WijkenEnBuurten.trim() === feature.properties?.["CBS-buurtcode"] && 
-                                         item.Perioden === perioden
+                                         item.Perioden === selectedPerioden
                             )?.Bijstandsuitkering_10 ?? null
                             : null
                     }
@@ -52,7 +53,7 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
             };
             setProcessedMapData(updatedMapData);
         }
-    }, [mapData, additionalData, perioden]);
+    }, [mapData, additionalData, selectedPerioden]);
 
     const getColor = useCallback((value: number | null | undefined) => {
         if (value === null || value === undefined) {
