@@ -2,6 +2,7 @@ import React from 'react';
 import { SelectVis, type Option } from '@/components/selectvis';
 import { Filters, type Filter } from '@/components/filters';
 import { SelectPerioden } from '@/components/selectperioden';
+import { SelectDataset } from '@/components/SelectDataset';
 
 interface SidebarProps {
     visOptions: Option[];
@@ -12,35 +13,65 @@ interface SidebarProps {
     selectedFilters: string[];
     PeriodenList: string[];
     selectedPerioden: string | null;
-    setSelectedPerioden: (perioden: string) => void;
+    setSelectedPerioden: (perioden: string | null) => void;
+    datasetOptions?: { value: string; label: string; }[];
+    selectedDataset: string | null;
+    setSelectedDataset: (dataset: string | null) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ 
-    visOptions, 
-    selectedVis, 
-    setSelectedVis, 
-    handleFilterChange, 
+const Sidebar: React.FC<SidebarProps> = ({
+    visOptions,
+    selectedVis,
+    setSelectedVis,
+    handleFilterChange,
     filterList,
     selectedFilters,
     PeriodenList,
     selectedPerioden,
-    setSelectedPerioden
+    setSelectedPerioden,
+    datasetOptions,
+    selectedDataset,
+    setSelectedDataset,
 }) => {
     return (
-        <div className="absolute top-4 right-4 w-1/4 p-4 bg-gray-300 rounded-lg shadow-lg z-10">
-            <SelectVis options={visOptions} value={selectedVis} onChange={setSelectedVis} />
-            <h1>Filters</h1>
-            <Filters 
-                filters={filterList} 
-                selectedFilters={selectedFilters}
-                onChange={handleFilterChange} 
-            />
-            <h1>Perioden</h1>
-            <SelectPerioden 
-                options={PeriodenList} 
-                value={selectedPerioden} 
-                onChange={setSelectedPerioden} 
-            />
+        <div className="absolute top-4 right-4 w-64 bg-white p-4 rounded shadow-lg z-10">
+            <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">Visualization</h3>
+                <SelectVis options={visOptions} value={selectedVis || ''} onChange={setSelectedVis} />
+            </div>
+
+            {selectedVis && (
+                <>
+                    {datasetOptions && datasetOptions.length > 0 && (
+                        <div className="mb-4">
+                            <h3 className="text-base mb-2">Dataset</h3>
+                            <SelectDataset
+                                options={datasetOptions}
+                                value={selectedDataset}
+                                onChange={setSelectedDataset}
+                            />
+                        </div>
+                    )}
+
+                    <div className="mb-4">
+                        <h3 className="text-base mb-2">Perioden</h3>
+                        <SelectPerioden 
+                            options={PeriodenList} 
+                            value={selectedPerioden} 
+                            onChange={setSelectedPerioden} 
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <h3 className="text-base mb-2">Filters</h3>
+                        <Filters 
+                            filters={filterList} 
+                            selectedFilters={selectedFilters}
+                            onChange={handleFilterChange} 
+                        />
+                    </div>
+                </>
+            )}
         </div>
     );
 };
