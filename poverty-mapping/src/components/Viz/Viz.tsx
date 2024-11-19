@@ -3,22 +3,13 @@ import { Feature, FeatureCollection } from 'geojson';
 import * as d3 from 'd3';
 import useMapDataLoader from '../MapDataLoader';
 import { Filterlist, VizLegend, PeriodenList } from './constants';
+import { AdditionalDataEntry, fetchAdditionalData } from './services/bijstandDataService';
+import MapTooltip from './components/MapTooltip';
+import { useTooltip } from './hooks/useTooltip';
 
 interface VizProps {
     selectedFilters: string[];
     selectedPerioden: string;
-}
-
-interface AdditionalDataEntry {
-    ID: number;
-    WijkenEnBuurten: string;
-    Perioden: string;
-    Codering_3: string;
-    Bijstandsuitkering_6: number;
-    Bijstandsuitkering_10: number;
-    InwonersVanaf15Jaar_13: number;
-    InwonersVanaf15JrTotAOWLeeftijd_14: number;
-    InwonersVanafDeAOWLeeftijd_15: number;
 }
 
 const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
@@ -27,9 +18,7 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
     const mapData = useMapDataLoader('/heerlen_buurten_2023_formatted.json');
     const [processedMapData, setProcessedMapData] = useState<FeatureCollection | null>(null);
     const [additionalData, setAdditionalData] = useState<Record<string, AdditionalDataEntry> | null>(null);
-    const [showTooltip, setShowTooltip] = useState(false);
-    const [tooltipContent, setTooltipContent] = useState('');
-    const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+    const { tooltipState, handlers } = useTooltip();
 
     const colorScale = useMemo(() =>
         d3.scaleLinear<string>()
@@ -38,14 +27,9 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
         []
     );
 
-    const getDataFileName = (period: string) => {
-        return `/cbs_bijstand_${period}.json`;
-    };
-
     useEffect(() => {
-        fetch(getDataFileName(perioden))
-            .then(response => response.json())
-            .then(data => setAdditionalData(data.value as Record<string, AdditionalDataEntry>))
+        fetchAdditionalData(perioden)
+            .then(setAdditionalData)
             .catch(error => console.error("Error loading additional data:", error));
     }, [perioden]);
 
@@ -69,23 +53,6 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
             setProcessedMapData(updatedMapData);
         }
     }, [mapData, additionalData, perioden]);
-
-    const handleMouseOver = (event: React.MouseEvent<SVGPathElement, MouseEvent>, d: Feature) => {
-        const name = d.properties?.buurtnaam || `Unnamed Feature, id: ${d.properties?.id}`;
-        const benefitAmount = d.properties?.Bijstandsuitkering_10 ?? 'No data';
-
-        setTooltipContent(`${name} \n Bijstandsuitkering ${benefitAmount}%`);
-        setTooltipPosition({ x: event.pageX + 10, y: event.pageY - 10 });
-        setShowTooltip(true);
-    };
-
-    const handleMouseMove = (event: MouseEvent) => {
-        setTooltipPosition({ x: event.pageX, y: event.pageY });
-    };
-
-    const handleMouseOut = () => {
-        setShowTooltip(false);
-    };
 
     const getColor = useCallback((value: number | null | undefined) => {
         if (value === null || value === undefined) {
@@ -119,11 +86,11 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
                 .attr('d', path)
                 .attr('fill', d => getColor(d.properties?.Bijstandsuitkering_10))
                 .attr('stroke', 'black')
-                .on('mouseover', handleMouseOver)
-                .on('mousemove', handleMouseMove)
-                .on('mouseout', handleMouseOut);
+                .on('mouseover', handlers.handleMouseOver)
+                .on('mousemove', handlers.handleMouseMove)
+                .on('mouseout', handlers.handleMouseOut);
         }
-    }, [getColor, processedMapData, mapData]);
+    }, [getColor, processedMapData, mapData, handlers]);
 
     useEffect(() => {
         if (svgRef.current) {
@@ -141,26 +108,13 @@ const Viz: React.FC<VizProps> = ({ selectedFilters, selectedPerioden }) => {
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <svg ref={svgRef} style={{ width: '100%', height: '100%' }}></svg>
-            {showTooltip && (
-                <div
-                    style={{
-                        position: 'absolute',
-                        top: `${tooltipPosition.y}px`,
-                        left: `${tooltipPosition.x}px`,
-                        backgroundColor: 'white',
-                        padding: '5px',
-                        border: '1px solid black',
-                        borderRadius: '3px',
-                        pointerEvents: 'none',
-                        transform: 'translate(-50%, -100%)'
-                    }}
-                >
-                    {tooltipContent}
-                </div>
-            )}
+            <MapTooltip
+                show={tooltipState.show}
+                content={tooltipState.content}
+                position={tooltipState.position}
+            />
         </div>
     );
 };
-
 export default Viz;
 export { Filterlist, VizLegend, PeriodenList }; 
