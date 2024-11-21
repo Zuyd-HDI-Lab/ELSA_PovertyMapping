@@ -14,17 +14,18 @@ interface ChoroplethProps {
 const Choropleth: React.FC<ChoroplethProps> = ({ selectedFilters, selectedPerioden, selectedDataset }) => {
     const svgRef = useRef<SVGSVGElement | null>(null);
     const mapData = useMapDataLoader('/heerlen_buurten_2023_formatted.json');
-    const [additionalData, setAdditionalData] = useState<Record<string, AdditionalDataEntry> | null>(null);
-    const { tooltipState, handlers } = useTooltip();
+    const [additionalData, setAdditionalData] = useState<AdditionalDataEntry[] | null>(null);
+    const { tooltipState, handlers } = useTooltip(selectedDataset);
 
     const getColor = useColorScale(selectedFilters);
     const processedMapData = useProcessMapData(mapData, additionalData, selectedPerioden, selectedDataset);
 
     useEffect(() => {
         if (selectedPerioden && selectedDataset) {
-            fetchAdditionalData(selectedPerioden, selectedDataset)
-                .then(setAdditionalData)
-                .catch(error => console.error("Error loading additional data:", error));
+            setAdditionalData(fetchAdditionalData());
+            // fetchAdditionalData(selectedPerioden, selectedDataset)
+            //     .then(setAdditionalData)
+            //     .catch(error => console.error("Error loading additional data:", error));
         }
     }, [selectedPerioden, selectedDataset]);
 

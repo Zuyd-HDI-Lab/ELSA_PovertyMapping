@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Feature } from 'geojson';
+import { DatasetOptions } from '../constants';
 
 interface TooltipState {
     show: boolean;
@@ -16,7 +17,7 @@ export interface TooltipHandlers {
     handleMouseOut: () => void;
 }
 
-export const useTooltip = () => {
+export const useTooltip = (selectedDataset: string | null) => {
     const [tooltipState, setTooltipState] = useState<TooltipState>({
         show: false,
         content: '',
@@ -25,14 +26,20 @@ export const useTooltip = () => {
 
     const handleMouseOver = useCallback((event: React.MouseEvent<SVGPathElement, MouseEvent>, d: Feature) => {
         const name = d.properties?.buurtnaam || `Unnamed Feature, id: ${d.properties?.id}`;
-        const benefitAmount = d.properties?.Bijstandsuitkering_10 ?? 'No data';
+        
+        let datasetContent = 'No dataset selected';
+        if (selectedDataset) {
+            const dataset = DatasetOptions.find(opt => opt.value === selectedDataset);
+            const value = d.properties?.[selectedDataset] ?? 'No data';
+            datasetContent = `${dataset?.label}: ${value}%`;
+        }
 
         setTooltipState({
             show: true,
-            content: `${name} \n Bijstandsuitkering ${benefitAmount}%`,
+            content: `${name}\n${datasetContent}`,
             position: { x: event.pageX + 10, y: event.pageY - 10 }
         });
-    }, []);
+    }, [selectedDataset]);
 
     const handleMouseMove = useCallback((event: MouseEvent) => {
         setTooltipState(prev => ({

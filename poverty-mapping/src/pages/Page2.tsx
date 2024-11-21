@@ -4,7 +4,7 @@ import { SearchBar } from "@/components/searchbar";
 import Viz, { Filterlist as VizFilterlist, VizLegend, PeriodenList as VizPeriodenList } from "@/components/Viz";
 import Sidebar from "@/components/Sidebar";
 import Legend from "@/components/Legend";
-import Choropleth, { Filterlist as ChoroplethFilterlist, PeriodenList as ChoroplethPeriodenList, DatasetOptions } from '@/components/Choropleth/Choropleth';
+import Choropleth, { Filterlist as ChoroplethFilterlist, PeriodenList as ChoroplethPeriodenList, DatasetOptions, ChoroplethLegend } from '@/components/Choropleth/Choropleth';
 
 const Page2: React.FC = () => {
     const [selectedVis, setSelectedVis] = useState<string | null>(null);
@@ -59,6 +59,8 @@ const Page2: React.FC = () => {
         switch (selectedVis) {
             case 'Viz':
                 return VizLegend;
+            case 'choropleth':
+                return ChoroplethLegend;
             default:
                 return null;
         }

@@ -19,11 +19,14 @@ const MapTooltip: React.FC<MapTooltipProps> = ({ show, content, position }) => {
                 top: `${position.y}px`,
                 left: `${position.x}px`,
                 backgroundColor: 'white',
-                padding: '5px',
+                padding: '8px',
                 border: '1px solid black',
-                borderRadius: '3px',
+                borderRadius: '4px',
                 pointerEvents: 'none',
-                transform: 'translate(-50%, -100%)'
+                transform: 'translate(-50%, -100%)',
+                whiteSpace: 'pre-line',
+                fontSize: '14px',
+                lineHeight: '1.4'
             }}
         >
             {content}

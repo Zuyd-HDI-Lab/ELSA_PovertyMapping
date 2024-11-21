@@ -14,8 +14,8 @@ export const ChoroplethLegend = {
 };
 
 export const DatasetOptions = [
-    { value: "bijstand", label: "Bijstandsuitkering" },
-    // { value: "inkomen", label: "Gemiddeld Inkomen" },
+    { value: "Bijstandsuitkering_10", label: "Bijstandsuitkering" },
+    { value: "Werkloosheidsuitkering_9", label: "Werkloosheidsuitkering" },
     // { value: "populatie", label: "Populatie" },
 ];
 
