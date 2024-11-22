@@ -40,6 +40,21 @@ export const useProcessMapData = (
                     };
                 })
             };
+
+            // Save to localStorage
+            try {
+                const logData = {
+                    timestamp: new Date().toISOString(),
+                    selectedPeriod: selectedPerioden,
+                    selectedDataset: selectedDataset,
+                    data: updatedMapData
+                };
+                
+                localStorage.setItem('mapData_log', JSON.stringify(logData));
+            } catch (error) {
+                console.error('Failed to save map data:', error);
+            }
+
             setProcessedMapData(updatedMapData);
         }
     }, [mapData, additionalData, selectedPerioden, selectedDataset]);

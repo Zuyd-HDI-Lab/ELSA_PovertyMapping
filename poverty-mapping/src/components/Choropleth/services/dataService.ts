@@ -74,8 +74,10 @@ export interface AdditionalDataEntry {
 // }; 
 
 
-import data from '/public/cbs_uitkering_combined.json'
+import dataUrl from '/cbs_uitkering_combined.json?url'
 
-export function fetchAdditionalData(): AdditionalDataEntry[] {
+export async function fetchAdditionalData(): Promise<AdditionalDataEntry[]> {
+    const response = await fetch(dataUrl);
+    const data = await response.json();
     return data.value as AdditionalDataEntry[];
 }

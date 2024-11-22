@@ -22,10 +22,9 @@ const Choropleth: React.FC<ChoroplethProps> = ({ selectedFilters, selectedPeriod
 
     useEffect(() => {
         if (selectedPerioden && selectedDataset) {
-            setAdditionalData(fetchAdditionalData());
-            // fetchAdditionalData(selectedPerioden, selectedDataset)
-            //     .then(setAdditionalData)
-            //     .catch(error => console.error("Error loading additional data:", error));
+            fetchAdditionalData()
+                .then(setAdditionalData)
+                .catch(error => console.error("Error loading additional data:", error));
         }
     }, [selectedPerioden, selectedDataset]);
 
