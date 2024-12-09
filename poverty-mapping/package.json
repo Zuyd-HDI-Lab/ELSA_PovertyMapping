@@ -24,8 +24,11 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.1",
+    "react-vega": "^7.6.0",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vega": "^5.30.0",
+    "vega-lite": "^5.22.0"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.2",
