@@ -3,21 +3,26 @@ import { VegaLite, VisualizationSpec } from "react-vega";
 
 interface LineChartProps {
     data: { date: string; value: number; series: string }[];
-    series: string[];
 }
 
-const LineChart: React.FC<LineChartProps> = ({ data, series }) => {
+const LineChart: React.FC<LineChartProps> = ({ data }) => {
     const spec: VisualizationSpec = {
         width: 1000,
         height: 500,
         mark: "line",
         encoding: {
-            x: { field: "date", type: "temporal" },
+            x: { 
+                field: "date", 
+                type: "temporal", 
+                axis : { 
+                    format: "%b %Y", 
+                    title: "Date",
+                }
+            },
             y: { field: "value", type: "quantitative" },
             color: { 
                 field: "series", 
                 type: "nominal", 
-                scale: { domain: series } 
             },
             tooltip: [
                 { field: "date", type: "temporal" },
