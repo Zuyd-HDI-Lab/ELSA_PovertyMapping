@@ -3,7 +3,6 @@ import { SelectVis, type Option } from '@/components/selectvis';
 import { Filters, type Filter } from '@/components/filters';
 import { SelectPerioden } from '@/components/selectperioden';
 import { SelectDataset } from '@/components/SelectDataset';
-import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 
 interface SidebarProps {
@@ -19,6 +18,7 @@ interface SidebarProps {
     datasetOptions?: { value: string; label: string; }[];
     selectedDataset: string | null;
     setSelectedDataset: (dataset: string | null) => void;
+    openModal: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -34,13 +34,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     datasetOptions,
     selectedDataset,
     setSelectedDataset,
+    openModal,
 }) => {
-    const navigate = useNavigate();
-
-    const handleRedirect = () => {
-        navigate('/timechartpage');
-    };
-
     return (
         <div className="absolute top-4 right-4 w-64 bg-white p-4 rounded shadow-lg z-10">
             <div className="mb-4">
@@ -78,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                             onChange={handleFilterChange} 
                         />
                     </div>
-                    <Button onClick={handleRedirect}>Go to Time Chart</Button>
+                    <Button onClick={openModal}>Open Time Chart</Button>
                 </>
             )}
 

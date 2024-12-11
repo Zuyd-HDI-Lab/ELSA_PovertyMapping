@@ -5,17 +5,20 @@ import Viz, { Filterlist as VizFilterlist, VizLegend, PeriodenList as VizPeriode
 import Sidebar from "@/components/Sidebar";
 import Legend from "@/components/Legend";
 import Choropleth, { Filterlist as ChoroplethFilterlist, PeriodenList as ChoroplethPeriodenList, DatasetOptions, ChoroplethLegend } from '@/components/Choropleth/Choropleth';
+import TimeChartPop from "@/components/TimeChartPop";
+import { Button } from "@/components/ui/button";
 
 const Page2: React.FC = () => {
     const [selectedVis, setSelectedVis] = useState<string | null>(null);
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+    const [selectedPerioden, setSelectedPerioden] = useState<string | null>(null);
+    const [selectedDataset, setSelectedDataset] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const visOptions = [
         { value: 'Viz', label: 'Visualization 1' },
         { value: 'choropleth', label: 'Choropleth Map' }
     ];
-    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-    const [selectedPerioden, setSelectedPerioden] = useState<string | null>(null);
-    const [selectedDataset, setSelectedDataset] = useState<string | null>(null);
-
 
     useEffect(() => {
         console.log("Selected Filters:", selectedFilters);
@@ -77,10 +80,11 @@ const Page2: React.FC = () => {
 
     return (
         <div className="h-screen relative">
+            {/* Main Visualizations */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 {selectedVis === 'Viz' && <Viz selectedFilters={selectedFilters} selectedPerioden={selectedPerioden} />}
                 {selectedVis === 'choropleth' && (
-                    <Choropleth 
+                    <Choropleth
                         selectedFilters={selectedFilters}
                         selectedPerioden={selectedPerioden}
                         selectedDataset={selectedDataset}
@@ -88,18 +92,22 @@ const Page2: React.FC = () => {
                 )}
             </div>
 
+            {/* Search Bar */}
             <div className="absolute top-4 left-4 z-10">
                 <SearchBar onSearch={handleSearch} />
             </div>
 
+            {/* Legend */}
             <div className="absolute bottom-4 right-4 w-full max-w-xs z-10">
                 {getLegendProps() && <Legend {...getLegendProps()!} />}
             </div>
 
+            {/* Slider */}
             <div className="absolute bottom-4 left-4 w-full max-w-xs z-10">
                 <Slider defaultValue={[33]} max={100} step={1} />
             </div>
 
+            {/* Sidebar */}
             <Sidebar
                 visOptions={visOptions}
                 selectedVis={selectedVis}
@@ -113,7 +121,23 @@ const Page2: React.FC = () => {
                 datasetOptions={getDatasetOptions()}
                 selectedDataset={selectedDataset}
                 setSelectedDataset={setSelectedDataset}
+                openModal={() => setIsModalOpen(true)} // Open modal handler
             />
+
+            {/* TimeChart Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-4 rounded shadow-lg max-w-3xl w-full">
+                        <Button
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                        >
+                            &times;
+                        </Button>
+                        <TimeChartPop className="w-full h-96" />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -4,23 +4,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { transformData, LineChartData } from "@/utils/transformData";
 import { fetchAdditionalData } from "@/components/Choropleth/services/dataService";
 
-// const lineData = [
-//     { date: "2023-01-01", value: 10, series: "A" },
-//     { date: "2023-02-01", value: 15, series: "A" },
-//     { date: "2023-03-01", value: 7, series: "A" },
-//     { date: "2023-04-01", value: 20, series: "A" },
-//     { date: "2023-01-01", value: 5, series: "B" },
-//     { date: "2023-02-01", value: 10, series: "B" },
-//     { date: "2023-03-01", value: 17, series: "B" },
-//     { date: "2023-04-01", value: 30, series: "B" },
-//     { date: "2023-01-01", value: 3, series: "C" },
-//     { date: "2023-02-01", value: 8, series: "C" },
-//     { date: "2023-03-01", value: 12, series: "C" },
-//     { date: "2023-04-01", value: 15, series: "C" },
-// ];
+interface TimeChartProps {
+    className?: string;
+}
 
-
-const TimeChartPage: React.FC = () => {
+const TimeChart: React.FC<TimeChartProps> = ({ className }) => {
     const [lineData, setLineData] = useState<LineChartData[]>([]);
     const [selectedSeries, setSelectedSeries] = useState<string[]>([]);
 
@@ -50,7 +38,7 @@ const TimeChartPage: React.FC = () => {
     };
 
     return (
-        <div className="flex h-screen">
+        <div className={`flex h-full ${className || ""}`}>
             {/* Chart Section */}
             <div className="flex-1 min-w-0 h-full">
                 <LineChart data={filteredData} className="w-full h-full" />
@@ -72,4 +60,4 @@ const TimeChartPage: React.FC = () => {
     );
 };
 
-export default TimeChartPage;
+export default TimeChart;

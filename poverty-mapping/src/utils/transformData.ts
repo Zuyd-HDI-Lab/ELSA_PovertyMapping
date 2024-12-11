@@ -9,7 +9,7 @@ interface InputData {
 export interface LineChartData {
     date: string;
     value: number;
-    series: string;
+    buurt: string;
 }
 
 export const transformData = (data: InputData[]): LineChartData[] => {
@@ -24,7 +24,7 @@ export const transformData = (data: InputData[]): LineChartData[] => {
         return {
             date: isoDate,
             value: item.Bijstandsuitkering_10,
-            series: item.WijkenEnBuurten
+            buurt: item.WijkenEnBuurten
         }
     });
     
