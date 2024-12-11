@@ -34,8 +34,8 @@ const TimeChartPage: React.FC = () => {
         };
         fetchData();
     }, []);
-    
-    const seriesOptions = Array.from(new Set(lineData.map((d) => d.series))); 
+
+    const seriesOptions = Array.from(new Set(lineData.map((d) => d.series)));
 
     const filteredData = lineData.filter((d) =>
         selectedSeries.includes(d.series)
@@ -50,8 +50,14 @@ const TimeChartPage: React.FC = () => {
     };
 
     return (
-        <div>
-            <div className="flex items-center gap-4 mb-4">
+        <div className="flex h-screen">
+            {/* Chart Section */}
+            <div className="flex-grow">
+                <LineChart data={filteredData} />
+            </div>
+
+            {/* Series Selection Section */}
+            <div className="flex flex-col items-start gap-4 ml-4 overflow-y-auto max-h-screen">
                 {seriesOptions.map((series) => (
                     <div key={series} className="flex items-center gap-2">
                         <Checkbox
@@ -62,7 +68,6 @@ const TimeChartPage: React.FC = () => {
                     </div>
                 ))}
             </div>
-            <LineChart data={filteredData}  />
         </div>
     );
 };
