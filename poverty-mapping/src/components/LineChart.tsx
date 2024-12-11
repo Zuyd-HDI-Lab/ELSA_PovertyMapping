@@ -2,13 +2,16 @@ import React from "react";
 import { VegaLite, VisualizationSpec } from "react-vega";
 
 interface LineChartProps {
-    data: { date: string; value: number; series: string }[];
+    data: { date: string; value: number; series: string }[],
+    width?: number,
+    height?: number;
 }
 
-const LineChart: React.FC<LineChartProps> = ({ data }) => {
+const LineChart: React.FC<LineChartProps> = ({ data, width, height }) => {
     const spec: VisualizationSpec = {
-        width: 500,
-        height: 500,
+        width: width || 800,
+        height: height || 400,
+        autosize: { type: "fit", contains: "padding" },
         mark: "line",
         encoding: {
             x: { 
