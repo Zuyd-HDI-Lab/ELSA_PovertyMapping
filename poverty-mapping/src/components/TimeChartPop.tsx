@@ -3,6 +3,7 @@ import LineChart from "@/components/LineChart";
 import { Checkbox } from "@/components/ui/checkbox";
 import { transformData, LineChartData } from "@/utils/transformData";
 import { fetchAdditionalData } from "@/components/Choropleth/services/dataService";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 
 interface TimeChartProps {
     className?: string;
@@ -38,25 +39,41 @@ const TimeChart: React.FC<TimeChartProps> = ({ className }) => {
     };
 
     return (
-        <div className={`flex h-full ${className || ""}`}>
-            {/* Chart Section */}
-            <div className="flex-1 min-w-0 h-full">
-                <LineChart data={filteredData} className="w-full h-full" />
-            </div>
+        <Card className={`${className} flex flex-col`}>
+            <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>Card Description</CardDescription>
+            </CardHeader>
 
-            {/* Series Selection Section */}
-            <div className="flex-shrink-0 w-1/4 max-w-sm p-4 bg-gray-100 overflow-y-auto">
-                {seriesOptions.map((series) => (
-                    <div key={series} className="flex items-center gap-2">
-                        <Checkbox
-                            checked={selectedSeries.includes(series)}
-                            onCheckedChange={() => handleSeriesToggle(series)}
-                        />
-                        <label className="text-sm font-medium">Series {series}</label>
-                    </div>
-                ))}
-            </div>
-        </div>
+            {/* Wrap CardContent in a flex-grow container with min-h-0 */}
+            <CardContent className="flex-grow flex w-full p-4 min-h-0">
+                {/* Chart Section */}
+                <div className="flex-grow p-4 min-h-0 min-w-0">
+                    <LineChart data={filteredData} className="w-full h-full" />
+                </div>
+
+                {/* Series Selection Section */}
+                <div className="flex-shrink min-w-0 w-1/4 max-w-sm p-4 bg-gray-100 overflow-y-auto">
+                    {seriesOptions.map((series) => (
+                        <div key={series} className="flex items-center gap-2 mb-2">
+                            <Checkbox
+                                checked={selectedSeries.includes(series)}
+                                onCheckedChange={() => handleSeriesToggle(series)}
+                            />
+                            <label className="text-sm font-medium">Series {series}</label>
+                        </div>
+                    ))}
+                </div>
+            </CardContent>
+
+            <CardFooter>
+                <p>Footer Content</p>
+            </CardFooter>
+        </Card>
+
+
+
+
     );
 };
 
