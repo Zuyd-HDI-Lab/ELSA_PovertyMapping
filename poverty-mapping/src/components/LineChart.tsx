@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import { VegaLite, VisualizationSpec } from "react-vega";
 
 interface LineChartProps {
@@ -7,9 +7,6 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ data, className }) => {
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const viewRef = useRef<any>(null);
-
     const spec: VisualizationSpec = {
         width: "container",
         height: "container",
@@ -37,46 +34,12 @@ const LineChart: React.FC<LineChartProps> = ({ data, className }) => {
 
     const chartData = { table: data };
 
-    const handleNewView = (view: any) => {
-        viewRef.current = view;
-    };
-
-    useEffect(() => {
-        if (!containerRef.current || !viewRef.current) return;
-
-        const resizeObserver = new ResizeObserver(() => {
-            console.log('ResizeObserver triggered');
-            requestAnimationFrame(() => {
-                viewRef.current.resize().runAsync();
-            });
-        });
-
-        resizeObserver.observe(containerRef.current);
-
-        // Fallback: Force a resize on window resize events
-        const handleWindowResize = () => {
-            requestAnimationFrame(() => {
-                if (viewRef.current) {
-                    viewRef.current.resize().runAsync();
-                }
-            });
-        };
-
-        window.addEventListener('resize', handleWindowResize);
-
-        return () => {
-            resizeObserver.disconnect();
-            window.removeEventListener('resize', handleWindowResize);
-        };
-    }, [viewRef]);
-
     return (
-        <div ref={containerRef} className={`w-full h-full ${className ?? ""}`}>
+        <div className={`w-full h-full ${className ?? ""}`}>
             <VegaLite
                 spec={spec}
                 data={chartData}
                 className="w-full h-full"
-                onNewView={handleNewView}
             />
         </div>
     );
