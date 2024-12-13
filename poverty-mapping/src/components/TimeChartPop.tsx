@@ -11,14 +11,14 @@ interface TimeChartProps {
 
 const TimeChart: React.FC<TimeChartProps> = ({ className }) => {
     const [lineData, setLineData] = useState<LineChartData[]>([]);
-    const [selectedSeries, setSelectedSeries] = useState<string[]>([]);
+    const [selectedBuurt, setSelectedBuurt] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             const data = await fetchAdditionalData();
             const transformedData = transformData(data);
             setLineData(transformedData);
-            // const seriesOptions = Array.from(new Set(transformedData.map((d) => d.series)));
+            // const seriesOptions = Array.from(new Set(transformedData.map((d) => d.buurt)));
             // setSelectedSeries(seriesOptions);
         };
         fetchData();
@@ -27,18 +27,19 @@ const TimeChart: React.FC<TimeChartProps> = ({ className }) => {
     const seriesOptions = Array.from(new Set(lineData.map((d) => d.buurt)));
 
     const filteredData = lineData.filter((d) =>
-        selectedSeries.includes(d.buurt)
+        selectedBuurt.includes(d.buurt)
     );
 
-    const handleSeriesToggle = (series: string) => {
-        setSelectedSeries((prev) =>
-            prev.includes(series)
-                ? prev.filter((s) => s !== series)
-                : [...prev, series]
+    const handleSeriesToggle = (buurt: string) => {
+        setSelectedBuurt((prev) =>
+            prev.includes(buurt)
+                ? prev.filter((s) => s !== buurt)
+                : [...prev, buurt]
         );
     };
 
     return (
+
         <Card className={`${className} flex flex-col`}>
             <CardHeader>
                 <CardTitle>Card Title</CardTitle>
@@ -52,15 +53,15 @@ const TimeChart: React.FC<TimeChartProps> = ({ className }) => {
                     <LineChart data={filteredData} className="w-full h-full" />
                 </div>
 
-                {/* Series Selection Section */}
+                {/* buurt Selection Section */}
                 <div className="flex-shrink min-w-0 w-1/4 max-w-sm p-4 bg-gray-100 overflow-y-auto">
-                    {seriesOptions.map((series) => (
-                        <div key={series} className="flex items-center gap-2 mb-2">
+                    {seriesOptions.map((buurt) => (
+                        <div key={buurt} className="flex items-center gap-2 mb-2">
                             <Checkbox
-                                checked={selectedSeries.includes(series)}
-                                onCheckedChange={() => handleSeriesToggle(series)}
+                                checked={selectedBuurt.includes(buurt)}
+                                onCheckedChange={() => handleSeriesToggle(buurt)}
                             />
-                            <label className="text-sm font-medium">Series {series}</label>
+                            <label className="text-sm font-medium">buurt {buurt}</label>
                         </div>
                     ))}
                 </div>
