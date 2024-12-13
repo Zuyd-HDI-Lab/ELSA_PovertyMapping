@@ -61,7 +61,7 @@ const TimeChart: React.FC<TimeChartProps> = ({ className }) => {
                                 checked={selectedBuurt.includes(buurt)}
                                 onCheckedChange={() => handleSeriesToggle(buurt)}
                             />
-                            <label className="text-sm font-medium">buurt {buurt}</label>
+                            <label className="text-sm font-medium">{buurt}</label>
                         </div>
                     ))}
                 </div>
