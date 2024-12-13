@@ -4,6 +4,7 @@ import { Filters, type Filter } from '@/components/filters';
 import { SelectPerioden } from '@/components/selectperioden';
 import { SelectDataset } from '@/components/SelectDataset';
 import { Button } from './ui/button';
+import { Card, CardHeader, CardContent, CardTitle } from './ui/card'; // Import Card components
 
 interface SidebarProps {
     visOptions: Option[];
@@ -37,47 +38,50 @@ const Sidebar: React.FC<SidebarProps> = ({
     openModal,
 }) => {
     return (
-        <div className="absolute top-4 right-4 w-64 bg-white p-4 rounded shadow-lg z-10">
-            <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">Visualization</h3>
-                <SelectVis options={visOptions} value={selectedVis || ''} onChange={setSelectedVis} />
-            </div>
+        <Card className="absolute top-4 right-4 w-64 z-10">
+            <CardHeader>
+                <CardTitle >Visualization</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="mb-4">
+                    <SelectVis options={visOptions} value={selectedVis || ''} onChange={setSelectedVis} />
+                </div>
 
-            {selectedVis && (
-                <>
-                    {datasetOptions && datasetOptions.length > 0 && (
+                {selectedVis && (
+                    <>
+                        {datasetOptions && datasetOptions.length > 0 && (
+                            <div className="mb-4">
+                                <h3 className="text-base mb-2">Dataset</h3>
+                                <SelectDataset
+                                    options={datasetOptions}
+                                    value={selectedDataset}
+                                    onChange={setSelectedDataset}
+                                />
+                            </div>
+                        )}
+
                         <div className="mb-4">
-                            <h3 className="text-base mb-2">Dataset</h3>
-                            <SelectDataset
-                                options={datasetOptions}
-                                value={selectedDataset}
-                                onChange={setSelectedDataset}
+                            <h3 className="text-base mb-2">Perioden</h3>
+                            <SelectPerioden
+                                options={PeriodenList}
+                                value={selectedPerioden}
+                                onChange={setSelectedPerioden}
                             />
                         </div>
-                    )}
 
-                    <div className="mb-4">
-                        <h3 className="text-base mb-2">Perioden</h3>
-                        <SelectPerioden 
-                            options={PeriodenList} 
-                            value={selectedPerioden} 
-                            onChange={setSelectedPerioden} 
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <h3 className="text-base mb-2">Filters</h3>
-                        <Filters 
-                            filters={filterList} 
-                            selectedFilters={selectedFilters}
-                            onChange={handleFilterChange} 
-                        />
-                    </div>
-                    <Button onClick={openModal}>Open Time Chart</Button>
-                </>
-            )}
-
-        </div>
+                        <div className="mb-4">
+                            <h3 className="text-base mb-2">Filters</h3>
+                            <Filters
+                                filters={filterList}
+                                selectedFilters={selectedFilters}
+                                onChange={handleFilterChange}
+                            />
+                        </div>
+                        <Button onClick={openModal}>Open Time Chart</Button>
+                    </>
+                )}
+            </CardContent>
+        </Card>
     );
 };
 
