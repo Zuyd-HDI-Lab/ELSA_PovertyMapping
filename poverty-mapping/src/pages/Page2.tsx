@@ -9,7 +9,7 @@ import TimeChartPop from "@/components/TimeChartPop";
 import { Button } from "@/components/ui/button";
 
 const Page2: React.FC = () => {
-    const [selectedVis, setSelectedVis] = useState<string | null>('choropleth');
+    const [selectedVis, setSelectedVis] = useState<string | null>(null);
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
     const [selectedPerioden, setSelectedPerioden] = useState<string | null>(null);
     const [selectedDataset, setSelectedDataset] = useState<string | null>(null);
@@ -121,7 +121,7 @@ const Page2: React.FC = () => {
                 datasetOptions={getDatasetOptions()}
                 selectedDataset={selectedDataset}
                 setSelectedDataset={setSelectedDataset}
-                openModal={() => setIsModalOpen(true)} // Open modal handler
+                openModal={() => setIsModalOpen(true)}
             />
 
             {/* TimeChart Modal */}
@@ -129,7 +129,7 @@ const Page2: React.FC = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <Button
                             onClick={() => setIsModalOpen(false)}
-                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                            className="absolute top-2 right-2"
                         >
                             &times;
                         </Button>
