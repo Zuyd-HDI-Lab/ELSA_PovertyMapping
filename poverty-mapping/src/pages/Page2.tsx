@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import Legend from "@/components/Legend";
 import Choropleth, { Filterlist as ChoroplethFilterlist, PeriodenList as ChoroplethPeriodenList, DatasetOptions, ChoroplethLegend } from '@/components/Choropleth/Choropleth';
 import TimeChartPop from "@/components/TimeChartPop";
+import TimeChartPop2 from "@/components/TimeChartPop2";
 import { Button } from "@/components/ui/button";
 
 const Page2: React.FC = () => {
@@ -133,7 +134,12 @@ const Page2: React.FC = () => {
                         >
                             &times;
                         </Button>
-                        <TimeChartPop className="w-[90vw] h-[90vh]"/>
+                        {selectedDataset === 'Bijstandsuitkering_10' && (
+                            <TimeChartPop className="w-[90vw] h-[90vh]"/>
+                        )}
+                        {selectedDataset === 'Werkloosheidsuitkering_9' && (
+                            <TimeChartPop2 className="w-[90vw] h-[90vh]"/>
+                        )}
                 </div>
             )}
         </div>

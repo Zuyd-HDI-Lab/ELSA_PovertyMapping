@@ -16,7 +16,7 @@ const TimeChart: React.FC<TimeChartProps> = ({ className }) => {
     useEffect(() => {
         const fetchData = async () => {
             const data = await fetchAdditionalData();
-            const transformedData = transformData(data);
+            const transformedData = await transformData(data);
             setLineData(transformedData);
             // const seriesOptions = Array.from(new Set(transformedData.map((d) => d.buurt)));
             // setSelectedSeries(seriesOptions);
@@ -42,8 +42,8 @@ const TimeChart: React.FC<TimeChartProps> = ({ className }) => {
 
         <Card className={`${className} flex flex-col`}>
             <CardHeader>
-                <CardTitle>Card Title</CardTitle>
-                <CardDescription>Card Description</CardDescription>
+                <CardTitle>Bijstandsuitkering</CardTitle>
+                <CardDescription></CardDescription>
             </CardHeader>
 
             {/* Wrap CardContent in a flex-grow container with min-h-0 */}
@@ -68,7 +68,7 @@ const TimeChart: React.FC<TimeChartProps> = ({ className }) => {
             </CardContent>
 
             <CardFooter>
-                <p>Footer Content</p>
+                <p>https://www.cbs.nl/nl-nl/cijfers/detail/85586NED</p>
             </CardFooter>
         </Card>
 
