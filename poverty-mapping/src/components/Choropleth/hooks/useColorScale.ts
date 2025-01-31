@@ -4,8 +4,8 @@ import * as d3 from 'd3';
 export const useColorScale = (selectedFilters: string[]) => {
     const colorScale = useMemo(() =>
         d3.scaleLinear<string>()
-            .domain([0, 20])
-            .range(['green', 'red']),
+            .domain([0, 25])
+            .range(['#FFE5B4', '#FF8C00']),
         []
     );
 

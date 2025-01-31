@@ -93,9 +93,9 @@ const Page2: React.FC = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="absolute top-4 left-4 z-10">
+            {/* <div className="absolute top-4 left-4 z-10">
                 <SearchBar onSearch={handleSearch} />
-            </div>
+            </div> */}
 
             {/* Legend */}
             <div className="absolute bottom-4 right-4 w-full max-w-xs z-10">
@@ -103,9 +103,9 @@ const Page2: React.FC = () => {
             </div>
 
             {/* Slider */}
-            <div className="absolute bottom-4 left-4 w-full max-w-xs z-10">
+            {/* <div className="absolute bottom-4 left-4 w-full max-w-xs z-10">
                 <Slider defaultValue={[33]} max={100} step={1} />
-            </div>
+            </div> */}
 
             {/* Sidebar */}
             <Sidebar

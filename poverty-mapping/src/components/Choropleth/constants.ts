@@ -7,8 +7,8 @@ export const ChoroplethLegend = {
     type: "gradient" as const,
     content: {
         stops: [
-            { value: 0, color: 'green', label: '0%' },
-            { value: 20, color: 'red', label: '20%' }
+            { value: 0, color: '#FFE5B4', label: '0%' },
+            { value: 25, color: '#FF8C00', label: '25%' }
         ]
     }
 };
